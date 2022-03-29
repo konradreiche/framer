@@ -15,6 +15,10 @@ TMP_DIR=$(mktemp -d)
 # create screenshot
 grim -g "$COORDINATES ${WIDTH}x${HEIGHT}" $TMP_DIR/screenshot.png
 
+# read width and height from screenshot to account for scaling
+WIDTH=$(magick identify -format "%w" $TMP_DIR/screenshot.png)
+HEIGHT=$(magick identify -format "%h" $TMP_DIR/screenshot.png)
+
 # generate rounded corners mask
 magick -size ${WIDTH}x${HEIGHT} xc:none -draw "roundrectangle 0,0,$WIDTH,$HEIGHT,10,10" $TMP_DIR/mask.png
 magick $TMP_DIR/screenshot.png -alpha Set $TMP_DIR/mask.png -compose DstIn -composite $TMP_DIR/screenshot.png
